@@ -31,7 +31,7 @@
         "media": false,
         "list-group": false,
         "panels": false,
-        "wells": valse,
+        "wells": false,
         "responsive-embed": true,
         "close": true,
         "modals": false,
