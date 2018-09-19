@@ -1,7 +1,6 @@
 import Visualizer from "./visualizer";
-import BubbleSort from "./bubble-sort";
 
-$(document).ready(function () {
+window.addEventListener("load", function () {
     let countOfElements = 10;
     Visualizer(countOfElements);
 });

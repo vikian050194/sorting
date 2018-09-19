@@ -24,10 +24,6 @@ module.exports = {
                 })
             },
             {
-                test: /\.(woff|woff2|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-                loader: "url-loader?limit=1024&name=/fonts/[name].[ext]"
-            },
-            {
                 test: /\.(jpg|jpeg|gif|png)$/,
                 exclude: /node_modules/,
                 loader: "url-loader?limit=1024&name=/images/[name].[ext]"
@@ -39,10 +35,6 @@ module.exports = {
         path: __dirname + "/client"
     },
     plugins: [
-        new webpack.ProvidePlugin({
-            "$": "jquery",
-            "jQuery": "jquery"
-        }),
         new ExtractTextPlugin("./build/bundle.css")
     ]
 };

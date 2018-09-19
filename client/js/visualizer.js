@@ -1,5 +1,14 @@
 import AnimationTemplate from "./animation";
 import RandomInt from "random-int";
+import BubbleSort from "./bubble-sort";
+
+function setElementAnimation(id, name) {
+    document.getElementById(`${id}`).style.animationName = name;
+}
+
+function setElementOrder(id, order) {
+    document.getElementById(`${id}`).style.order = order;
+}
 
 function insertAnimation(id, name, x, y) {
     let style = document.createElement("style");
@@ -7,77 +16,81 @@ function insertAnimation(id, name, x, y) {
     style.innerHTML = AnimationTemplate.replace("{NAME}", name);
     style.innerHTML = style.innerHTML.replace(/\{X\}/g, x);
     style.innerHTML = style.innerHTML.replace(/\{Y\}/g, y);
-    
+
     document.getElementsByTagName("head")[0].appendChild(style);
 
-    $(`#${id}`).css("animation-name", name);
+    setElementAnimation(id, name);
 }
 
-export default function SortingVisualizer(countOfElements, steps) {
-    const animationDurationInSeconds = 5;
+function getElements(count) {
+    const result = [];
+
+    while (result.length !== count) {
+        let newElement = RandomInt(1, count);
+
+        if (result.indexOf(newElement) === -1) {
+            result.push(newElement);
+        }
+    }
+
+    return result;
+}
+
+export default function SortingVisualizer(countOfElements) {
+    const animationDurationInSeconds = 1;
+    const defaultAnimation = "none";
     const nameOfAnimationForLeftElement = "animationForLeftElement";
     const nameOfAnimationForRightElement = "animationForRightElement";
 
-    let firstIndex = null;
-    let firstId = null;
-    let secondIndex = null;
-    let secondId = null;
+    const elements = getElements(countOfElements);
+    const steps = BubbleSort([...elements]);
+    let index = 0;
+
     let content = "";
 
-    for (let i = 0; i < countOfElements; i++) {
-        content += `<h2 id="${i}" class="element" style="order:${i};">${RandomInt(1, 99)}</h2>`;
+    for (let i = 0; i < elements.length; i++) {
+        content += `<h2 id="${i}" class="element" style="order: ${i};">${elements[i]}</h2>`;
     }
 
-    $(".elements-container").html(content);
+    document.getElementsByClassName("elements-container")[0].innerHTML = content;
 
-    const height = $(".element").height();
-    const width = $(".element").width();
-    const border = parseInt($(".element").css("border-width"));
-    const margin = parseInt($(".element").css("margin-top"));
+    const firstElement = document.getElementsByClassName("element")[0];
+    const height = firstElement.clientHeight;
+    const width = firstElement.clientWidth;
+    const border = firstElement.clientTop;
+    const margin = parseInt((firstElement.currentStyle || window.getComputedStyle(firstElement)).marginTop);
 
-    $(".element").each(function () {
-        $(this).click(() => {
-            const currentIndex = $(this).css("order");
-            const currentId = $(this).attr("id");
-
-            if (!firstIndex) {
-                firstIndex = currentIndex;
-                firstId = currentId;
-                return;
-            } else {
-                secondIndex = currentIndex;
-                secondId = currentId;
-
-                if(currentIndex === firstIndex){
-                    return;
-                }
-
-                if(currentIndex < firstIndex){
-                    secondIndex = firstIndex;
-                    secondId = firstId;
-
-                    firstIndex = currentIndex;
-                    firstId = currentId;
-                }
-            }
-
-            const x = (secondIndex - firstIndex) * (width + margin * 2 + border * 2);
-            const y = height + margin * 2 + border * 2;
-            insertAnimation(firstId, nameOfAnimationForLeftElement, x, y);
-            insertAnimation(secondId, nameOfAnimationForRightElement, -x, -y);
-
-            setTimeout(() => {
-                $(`#${firstId}`).css("order", secondIndex);
-                $(`#${secondId}`).css("order", firstIndex);
-
-                $(`#${firstId}`).css("animation-name", "none");
-                $(`#${secondId}`).css("animation-name", "none");
-
-                firstIndex = null;
-                firstId = null;
-                secondIndex = null;
-                secondId = null;
-            }, animationDurationInSeconds * 1000);
-        });
+    [].forEach.call(document.getElementsByClassName("element"), function (e) {
+        e.style.animationDuration = animationDurationInSeconds + "s";
     });
+
+    let leftId = null;
+    let rightId = null;
+
+    let tick = function () {
+        if (index === steps.length) {
+            clearInterval(id);
+            return;
+        }
+
+        const [leftIndex, rightIndex] = steps[index++];
+
+        leftId = document.querySelector(`[style*="order: ${leftIndex}"]`).getAttribute("id");
+        rightId = document.querySelector(`[style*="order: ${rightIndex}"]`).getAttribute("id");
+
+        const x = (rightIndex - leftIndex) * (width + margin * 2 + border * 2);
+        const y = height + margin * 2 + border * 2;
+        insertAnimation(leftId, nameOfAnimationForLeftElement, x, y);
+        insertAnimation(rightId, nameOfAnimationForRightElement, -x, -y);
+
+        setTimeout(() => {
+            setElementOrder(leftId, rightIndex);
+            setElementOrder(rightId, leftIndex);
+            setElementAnimation(leftId, defaultAnimation);
+            setElementAnimation(rightId, defaultAnimation);
+        }, animationDurationInSeconds * 1000);
+    };
+
+    tick();
+    let id = setInterval(tick, animationDurationInSeconds * 1000 + 100);
 }

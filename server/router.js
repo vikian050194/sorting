@@ -1,11 +1,11 @@
-var express = require('express'),
+var express = require("express"),
     router = express.Router(),
-    path = require('path');
+    path = require("path");
 
-if (process.env.NODE_ENV === 'production') {
-    router.route('/')
+if (process.env.NODE_ENV === "production") {
+    router.route("/")
         .get(function (req, res) {
-            res.sendFile(path.resolve(__dirname + '/../client/Index.html'));
+            res.sendFile(path.resolve(__dirname + "/../client/Index.html"));
         });
 }
 
