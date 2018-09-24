@@ -6,20 +6,39 @@ function setElementAnimation(id, name) {
     document.getElementById(`${id}`).style.animationName = name;
 }
 
+function removeElementAnimation(id) {
+    document.getElementById(id).style.removeProperty("animation-name");
+}
+
 function setElementOrder(id, order) {
     document.getElementById(`${id}`).style.order = order;
 }
 
-function insertAnimation(id, name, x, y) {
-    let style = document.createElement("style");
-    style.type = "text/css";
-    style.innerHTML = AnimationTemplate.replace("{NAME}", name);
-    style.innerHTML = style.innerHTML.replace(/\{X\}/g, x);
-    style.innerHTML = style.innerHTML.replace(/\{Y\}/g, y);
+function insertAnimation(items) {
+    //it's really interesting problem, that without timeout nothing works
+    setTimeout(() => {
+        let style = document.createElement("style");
+        let itemAnimation = "";
+        style.type = "text/css";
 
-    document.getElementsByTagName("head")[0].appendChild(style);
+        for (let index = 0; index < items.length; index++) {
+            const {
+                id,
+                name,
+                x,
+                y
+            } = items[index];
 
-    setElementAnimation(id, name);
+            setElementAnimation(id, name);
+
+            itemAnimation = AnimationTemplate.replace("{NAME}", name);
+            itemAnimation = itemAnimation.replace(/\{X\}/g, x);
+            itemAnimation = itemAnimation.replace(/\{Y\}/g, y);
+            style.innerHTML += itemAnimation;
+        }
+
+        document.getElementsByTagName("head")[0].appendChild(style);
+    }, 0);
 }
 
 function getElements(count) {
@@ -37,8 +56,7 @@ function getElements(count) {
 }
 
 export default function SortingVisualizer(countOfElements) {
-    const animationDurationInSeconds = 1;
-    const defaultAnimation = "none";
+    const animationDurationInSeconds = 0.5;
     const nameOfAnimationForLeftElement = "animationForLeftElement";
     const nameOfAnimationForRightElement = "animationForRightElement";
 
@@ -65,32 +83,63 @@ export default function SortingVisualizer(countOfElements) {
     });
 
     let leftId = null;
+    let leftIndex = null;
     let rightId = null;
+    let rightIndex = null;
+    let x = null;
+    let y = null;
+    let countOfFinishedAnimations = 0;
 
-    let tick = function () {
-        if (index === steps.length) {
-            clearInterval(id);
-            return;
+    let tick = (e) => {
+        if (e) {
+            countOfFinishedAnimations++;
+
+            if (e.target.id === leftId) {
+                setElementOrder(leftId, rightIndex);
+            }
+
+            if (e.target.id === rightId) {
+                setElementOrder(rightId, leftIndex);
+            }
+
+            if (index === steps.length) {
+                return;
+            }
         }
 
-        const [leftIndex, rightIndex] = steps[index++];
+        if (countOfFinishedAnimations === 2 || !e) {
+            countOfFinishedAnimations = 0;
 
-        leftId = document.querySelector(`[style*="order: ${leftIndex}"]`).getAttribute("id");
-        rightId = document.querySelector(`[style*="order: ${rightIndex}"]`).getAttribute("id");
+            [leftIndex, rightIndex] = steps[index++];
 
-        const x = (rightIndex - leftIndex) * (width + margin * 2 + border * 2);
-        const y = height + margin * 2 + border * 2;
-        insertAnimation(leftId, nameOfAnimationForLeftElement, x, y);
-        insertAnimation(rightId, nameOfAnimationForRightElement, -x, -y);
+            if (leftId && rightId) {
+                removeElementAnimation(leftId);
+                removeElementAnimation(rightId);
+            }
 
-        setTimeout(() => {
-            setElementOrder(leftId, rightIndex);
-            setElementOrder(rightId, leftIndex);
-            setElementAnimation(leftId, defaultAnimation);
-            setElementAnimation(rightId, defaultAnimation);
-        }, animationDurationInSeconds * 1000);
+            leftId = document.querySelector(`[style*="order: ${leftIndex}"]`).getAttribute("id");
+            rightId = document.querySelector(`[style*="order: ${rightIndex}"]`).getAttribute("id");
+
+            x = (rightIndex - leftIndex) * (width + margin * 2 + border * 2);
+            y = height + margin * 2 + border * 2;
+
+            insertAnimation([{
+                    id: leftId,
+                    name: nameOfAnimationForLeftElement,
+                    x: x,
+                    y: y
+                },
+                {
+                    id: rightId,
+                    name: nameOfAnimationForRightElement,
+                    x: -x,
+                    y: -y
+                }
+            ]);
+        }
     };
 
+    document.addEventListener("animationend", tick, false);
+
     tick();
-    let id = setInterval(tick, animationDurationInSeconds * 1000 + 100);
 }
