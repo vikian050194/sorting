@@ -4,9 +4,10 @@ let swap = function (e, i, j) {
     e[j] = temp;
 };
 
-function BubbleSort(elements) {
-    let length = elements.length;
-    let steps = [];
+function BubbleSort(items) {
+    const elements = [...items];
+    const length = elements.length;
+    const steps = [];
 
     for (let i = 0; i < length; i++) {
         for (let j = 0; j < length - i; j++) {

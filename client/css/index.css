@@ -13,12 +13,9 @@ body {
     background-image: none;
 }
 
-.container{
-    display: grid;
-}
-
-.main-container{
+.main-container {
     margin-top: 400px;
+    display: grid;
 }
 
 .elements-container {
@@ -28,16 +25,23 @@ body {
 }
 
 .element {
-    width: 100px;
-
+    font-size: 25px;
     text-align: center;
-    vertical-align: middle;
     display: table-cell;
+    vertical-align: middle;
+}
+
+.element-container {
+    display: table;
+
+    width: 50px;
+    height: 50px;
 
     border-style: solid;
     border-color: black;
     border-width: 5px;
-    border-radius: 5px;
+    border-radius: 50%;
+
 
     margin: 10px;
     position: relative;
@@ -45,6 +49,7 @@ body {
     animation-name: none;
     animation-duration: 5s;
     animation-iteration-count: 1;
+    animation-timing-function: linear;
 }
 
 img {

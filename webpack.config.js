@@ -36,5 +36,6 @@ module.exports = {
     },
     plugins: [
         new ExtractTextPlugin("./build/bundle.css")
+        // "transform-object-rest-spread"
     ]
 };

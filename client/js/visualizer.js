@@ -1,9 +1,17 @@
-import AnimationTemplate from "./animation";
+import {
+    nameOfAnimationForLeftElement,
+    nameOfAnimationForRightElement,
+    type1,
+    type2
+} from "./animation";
 import RandomInt from "random-int";
 import BubbleSort from "./bubble-sort";
 
 function setElementAnimation(id, name) {
-    document.getElementById(`${id}`).style.animationName = name;
+    ((e) => {
+        e.offsetHeight; //it forces browser to calculate (each elements properties) and DOM reflow occurred before required changes in CSS
+        e.style.animationName = name;
+    })(document.getElementById(`${id}`));
 }
 
 function removeElementAnimation(id) {
@@ -14,31 +22,29 @@ function setElementOrder(id, order) {
     document.getElementById(`${id}`).style.order = order;
 }
 
-function insertAnimation(items) {
-    //it's really interesting problem, that without timeout nothing works
-    setTimeout(() => {
-        let style = document.createElement("style");
-        let itemAnimation = "";
-        style.type = "text/css";
+function insertAnimation(options, leftId, rightId) {
+    //it's really interesting problem: without setTimeout nothing works
+    //
+    // setTimeout(() => {
+    setElementAnimation(leftId, nameOfAnimationForLeftElement);
+    setElementAnimation(rightId, nameOfAnimationForRightElement);
 
-        for (let index = 0; index < items.length; index++) {
-            const {
-                id,
-                name,
-                x,
-                y
-            } = items[index];
+    let animation = document.getElementById("animation");
 
-            setElementAnimation(id, name);
+    if (!animation) {
+        animation = document.createElement("style");
+        animation.type = "text/css";
+        animation.setAttribute("id", "animation");
+        document.getElementsByTagName("head")[0].appendChild(animation);
+    }
 
-            itemAnimation = AnimationTemplate.replace("{NAME}", name);
-            itemAnimation = itemAnimation.replace(/\{X\}/g, x);
-            itemAnimation = itemAnimation.replace(/\{Y\}/g, y);
-            style.innerHTML += itemAnimation;
-        }
+    if (options.animationType === "type1") {
+        animation.innerHTML = type1(options);
+    } else {
+        animation.innerHTML = type2(options);
+    }
 
-        document.getElementsByTagName("head")[0].appendChild(style);
-    }, 0);
+    // }, 0);
 }
 
 function getElements(count) {
@@ -55,11 +61,11 @@ function getElements(count) {
     return result;
 }
 
-export default function SortingVisualizer(countOfElements) {
-    const animationDurationInSeconds = 0.5;
-    const nameOfAnimationForLeftElement = "animationForLeftElement";
-    const nameOfAnimationForRightElement = "animationForRightElement";
-
+export default function SortingVisualizer({
+    countOfElements,
+    animationType,
+    animationDuration: animationDurationInSeconds
+}) {
     const elements = getElements(countOfElements);
     const steps = BubbleSort([...elements]);
     let index = 0;
@@ -67,18 +73,18 @@ export default function SortingVisualizer(countOfElements) {
     let content = "";
 
     for (let i = 0; i < elements.length; i++) {
-        content += `<h2 id="${i}" class="element" style="order: ${i};">${elements[i]}</h2>`;
+        content += `<div id="${i}" class="element-container" style="order: ${i};"><div class="element">${elements[i]}</div></div>`;
     }
 
-    document.getElementsByClassName("elements-container")[0].innerHTML = content;
+    document.getElementsByClassName("main-container")[0].innerHTML = `<div class="elements-container">${content}</div>`;
 
-    const firstElement = document.getElementsByClassName("element")[0];
+    const firstElement = document.getElementsByClassName("element-container")[0];
     const height = firstElement.clientHeight;
     const width = firstElement.clientWidth;
     const border = firstElement.clientTop;
     const margin = parseInt((firstElement.currentStyle || window.getComputedStyle(firstElement)).marginTop);
 
-    [].forEach.call(document.getElementsByClassName("element"), function (e) {
+    [].forEach.call(document.getElementsByClassName("element-container"), function (e) {
         e.style.animationDuration = animationDurationInSeconds + "s";
     });
 
@@ -86,9 +92,7 @@ export default function SortingVisualizer(countOfElements) {
     let leftIndex = null;
     let rightId = null;
     let rightIndex = null;
-    let x = null;
-    let y = null;
-    let countOfFinishedAnimations = 0;
+    let countOfFinishedAnimations = 2;
 
     let tick = (e) => {
         if (e) {
@@ -107,7 +111,7 @@ export default function SortingVisualizer(countOfElements) {
             }
         }
 
-        if (countOfFinishedAnimations === 2 || !e) {
+        if (countOfFinishedAnimations === 2) {
             countOfFinishedAnimations = 0;
 
             [leftIndex, rightIndex] = steps[index++];
@@ -120,26 +124,19 @@ export default function SortingVisualizer(countOfElements) {
             leftId = document.querySelector(`[style*="order: ${leftIndex}"]`).getAttribute("id");
             rightId = document.querySelector(`[style*="order: ${rightIndex}"]`).getAttribute("id");
 
-            x = (rightIndex - leftIndex) * (width + margin * 2 + border * 2);
-            y = height + margin * 2 + border * 2;
-
-            insertAnimation([{
-                    id: leftId,
-                    name: nameOfAnimationForLeftElement,
-                    x: x,
-                    y: y
-                },
-                {
-                    id: rightId,
-                    name: nameOfAnimationForRightElement,
-                    x: -x,
-                    y: -y
-                }
-            ]);
+            insertAnimation({
+                leftIndex,
+                rightIndex,
+                height,
+                width,
+                margin,
+                border,
+                animationType
+            }, leftId, rightId);
         }
     };
 
-    document.addEventListener("animationend", tick, false);
+    document.getElementsByClassName("elements-container")[0].addEventListener("animationend", tick, false);
 
     tick();
 }
