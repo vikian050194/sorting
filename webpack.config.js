@@ -31,12 +31,10 @@ module.exports = {
             },
             {
                 test: /\.(html)$/,
-                loader: "url-loader",
+                loader: "file-loader",
                 options: {
                     limit: 1024,
-                    name: "[name].[ext]",
-                    outputPath: "/",
-                    publicPath: "/"
+                    name: "[name].[ext]"
                 }
             }
         ]
