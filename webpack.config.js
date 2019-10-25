@@ -26,8 +26,11 @@ module.exports = {
             },
             {
                 test: /\.(jpg|jpeg|gif|png|ico)$/,
-                exclude: /node_modules/,
-                loader: "url-loader?limit=1024&name=[name].[ext]"
+                loader: "file-loader",
+                options: {
+                    limit: 1024,
+                    name: "[name].[ext]"
+                }
             },
             {
                 test: /\.(html)$/,
