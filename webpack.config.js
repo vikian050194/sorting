@@ -3,7 +3,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
     mode: "development",
-    entry: ["./js/index.js", "bootstrap-loader/extractStyles", "./build.js"],
+    entry: ["./js/index.js", "./build.js"],
     devtool: "inline-source-map",
     module: {
         rules: [
@@ -13,7 +13,7 @@ module.exports = {
                 use: {
                     loader: "babel-loader",
                     options: {
-                        presets: ["babel-preset-env"]
+                        presets: ["@babel/preset-env"]
                     }
                 }
             },

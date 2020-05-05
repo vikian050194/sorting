@@ -25,26 +25,26 @@ function setElementOrder(id, order) {
 function insertAnimation(options, leftId, rightId) {
     //it's really interesting problem: without setTimeout nothing works
     //
-    // setTimeout(() => {
-    setElementAnimation(leftId, nameOfAnimationForLeftElement);
-    setElementAnimation(rightId, nameOfAnimationForRightElement);
+    setTimeout(() => {
+        setElementAnimation(leftId, nameOfAnimationForLeftElement);
+        setElementAnimation(rightId, nameOfAnimationForRightElement);
 
-    let animation = document.getElementById("animation");
+        let animation = document.getElementById("animation");
 
-    if (!animation) {
-        animation = document.createElement("style");
-        animation.type = "text/css";
-        animation.setAttribute("id", "animation");
-        document.getElementsByTagName("head")[0].appendChild(animation);
-    }
+        if (!animation) {
+            animation = document.createElement("style");
+            animation.type = "text/css";
+            animation.setAttribute("id", "animation");
+            document.getElementsByTagName("head")[0].appendChild(animation);
+        }
 
-    if (options.animationType === "type1") {
-        animation.innerHTML = type1(options);
-    } else {
-        animation.innerHTML = type2(options);
-    }
+        if (options.animationType === "type1") {
+            animation.innerHTML = type1(options);
+        } else {
+            animation.innerHTML = type2(options);
+        }
 
-    // }, 0);
+    }, 0);
 }
 
 function getElements(count) {

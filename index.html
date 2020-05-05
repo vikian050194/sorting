@@ -4,51 +4,23 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Bubble sort</title>
+    <title>sotring</title>
     <link href="bundle.css" rel="stylesheet">
     <script type="text/javascript" src="bundle.js"></script>
     <link rel="icon" href="favicon.ico">
 </head>
 
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top" id="navbar">
-        <div class="container">
-            <div class="navbar-header">
-                <a href="/" class="navbar-brand">
-                    <img alt="Brand" src="favicon.ico">
-                    &nbsp;
-                    Bubble sort
-                </a>
-            </div>
-            <div class="collapse navbar-collapse bs-example-js-navbar-collapse">
-                <form class="navbar-form navbar-left" role="search">
-
-                    <div class="form-group">
-                        <input id="count" type="text" class="form-control" placeholder="Count of elements" value="10">
-                        <input id="duration" type="text" class="form-control" placeholder="Animation duration" value="1">
-                        <select id="type" class="form-control">
-                            <option value="type1">Square</option>
-                            <option value="type2">Circle</option>
-                        </select>
-                    </div>
-                </form>
-                <ul class="nav navbar-nav navbar-left">
-                    <!-- <div class="input-group">
-                        <span class="input-group-addon" id="basic-addon1">Count of elements</span>
-                        <input type="text" class="form-control" id="count"  aria-describedby="sizing-addon1">
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-addon" id="basic-addon2">Animation duration</span>
-                        <input type="text" class="form-control" id="duration"  aria-describedby="basic-addon2">
-                    </div> -->
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <button id="start" type="button" class="btn btn-default navbar-btn">Start</button>
-                    <button id="stop" type="button" class="btn btn-default navbar-btn">Stop</button>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <div class="options-container container">
+        <input id="count" type="text" class="form-control" placeholder="Count of elements" value="5">
+        <input id="duration" type="text" class="form-control" placeholder="Animation duration" value="2">
+        <select id="type" class="form-control">
+            <option value="type1">Square</option>
+            <option value="type2">Circle</option>
+        </select>
+        <button id="start" type="button" class="btn btn-default navbar-btn">Start</button>
+        <button id="stop" type="button" class="btn btn-default navbar-btn">Stop</button>
+    </div>
     <div class="main-container container"></div>
 </body>
 

@@ -52,8 +52,8 @@ const type1 = function ({
     }
 `;
 
-    const x = (rightIndex - leftIndex) * (width + margin * 2 + border * 2);
-    const y = height / 2 + margin + border;
+    const x = (rightIndex - leftIndex) * (width + margin * 2);
+    const y = height / 2 + margin;
 
     let animationForLeftElement = setAnimationName(template, nameOfAnimationForLeftElement)
         .replace(/\{X\}/g, x)
@@ -100,13 +100,13 @@ const type2 = function ({
     }
 `;
 
-    const x = (rightIndex - leftIndex) * (width + margin * 2 + border * 2);
+    const x = (rightIndex - leftIndex) * (width + margin * 2);
 
-    let animationForLeftElement = setAnimationName(template, nameOfAnimationForLeftElement)
+    const animationForLeftElement = setAnimationName(template, nameOfAnimationForLeftElement)
         .replace(/\{X\}/g, -x)
         .replace(/\{COLOR\}/g, "red");
 
-    let animationForRightElement = setAnimationName(template, nameOfAnimationForRightElement)
+    const animationForRightElement = setAnimationName(template, nameOfAnimationForRightElement)
         .replace(/\{X\}/g, x)
         .replace(/\{COLOR\}/g, "blue");
 
