@@ -1,9 +1,11 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+const buildFolderName = "public";
+
 module.exports = {
     mode: "development",
-    entry: ["./js/index.js", "./build.js"],
+    entry: ["./src/js/index.js", "./src/css/index.css", "./src/index.html", "./src/favicon.svg"],
     devtool: "inline-source-map",
     module: {
         rules: [
@@ -25,7 +27,7 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(jpg|jpeg|gif|png|ico)$/,
+                test: /\.(jpg|jpeg|gif|png|ico|svg)$/,
                 loader: "file-loader",
                 options: {
                     limit: 1024,
@@ -44,7 +46,7 @@ module.exports = {
     },
     output: {
         filename: "bundle.js",
-        path: path.resolve(__dirname, "build"),
+        path: path.resolve(__dirname, buildFolderName),
         publicPath: "/"
     },
     plugins: [
@@ -53,8 +55,8 @@ module.exports = {
         })
     ],
     devServer: {
-        index: path.resolve(__dirname, "index.html"),
-        contentBase: path.resolve(__dirname, "build"),
+        index: path.resolve(__dirname, buildFolderName,"index.html"),
+        contentBase: path.resolve(__dirname, buildFolderName),
         publicPath: "/",
         port: 8080,
         watchContentBase: false,

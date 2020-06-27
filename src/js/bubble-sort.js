@@ -1,4 +1,4 @@
-let swap = function (e, i, j) {
+const swap = function (e, i, j) {
     let temp = e[i];
     e[i] = e[j];
     e[j] = temp;

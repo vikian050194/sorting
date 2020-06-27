@@ -1,6 +1,6 @@
 import Visualizer from "./visualizer";
 
-window.addEventListener("load", function () {
+document.addEventListener("DOMContentLoaded", function() { 
     document.getElementById("start").addEventListener("click", () => {
         const countOfElements = parseInt(document.getElementById("count").value || "5");
         const animationDuration = parseInt(document.getElementById("duration").value || "2");
