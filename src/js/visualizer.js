@@ -76,7 +76,7 @@ export default function SortingVisualizer({
         content += `<div id="${i}" class="element-container" style="order: ${i};"><div class="element">${elements[i]}</div></div>`;
     }
 
-    document.getElementsByClassName("main-container")[0].innerHTML = `<div class="elements-container">${content}</div>`;
+    document.getElementsByClassName("elements-container")[0].innerHTML = content;
 
     const firstElement = document.getElementsByClassName("element-container")[0];
     const height = firstElement.clientHeight;

@@ -11,17 +11,19 @@
 </head>
 
 <body>
-    <div class="options-container container">
-        <input id="count" type="text" class="form-control" placeholder="Count of elements" value="5">
-        <input id="duration" type="text" class="form-control" placeholder="Animation duration" value="2">
-        <select id="type" class="form-control">
-            <option value="type1">Square</option>
-            <option value="type2">Circle</option>
-        </select>
-        <button id="start" type="button" class="btn btn-default navbar-btn">Start</button>
-        <button id="stop" type="button" class="btn btn-default navbar-btn">Stop</button>
+    <div class="main-container">
+        <div class="options-container">
+            <input id="count" type="text" class="form-control" placeholder="Count of elements" value="5">
+            <input id="duration" type="text" class="form-control" placeholder="Animation duration" value="2">
+            <select id="type" class="form-control">
+                <option value="type1">Square</option>
+                <option value="type2">Circle</option>
+            </select>
+            <button id="start" type="button" class="btn btn-default navbar-btn">Start</button>
+            <button id="stop" type="button" class="btn btn-default navbar-btn">Stop</button>
+        </div>
+        <div class="elements-container"></div>
     </div>
-    <div class="main-container container"></div>
 </body>
 
 </html>
