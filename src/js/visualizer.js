@@ -1,11 +1,11 @@
 import {
     nameOfAnimationForLeftElement,
-    nameOfAnimationForRightElement,
-    type1,
-    type2
-} from "./animation";
-import RandomInt from "random-int";
-import BubbleSort from "./bubble-sort";
+    nameOfAnimationForRightElement
+} from "./animations";
+import {
+    SquareAnimation,
+    CircleAnimation
+} from "./animations";
 
 function setElementAnimation(id, name) {
     ((e) => {
@@ -38,105 +38,114 @@ function insertAnimation(options, leftId, rightId) {
             document.getElementsByTagName("head")[0].appendChild(animation);
         }
 
-        if (options.animationType === "type1") {
-            animation.innerHTML = type1(options);
-        } else {
-            animation.innerHTML = type2(options);
+        let animationDescription = "";
+        switch (options.animationType) {
+            case "square":
+                animationDescription = new SquareAnimation().swap(options);
+                break;
+            case "circle":
+                animationDescription = new CircleAnimation().swap(options);
+                break;
+            default:
+
+                break;
         }
+
+        animation.innerHTML = animationDescription;
 
     }, 0);
 }
 
-function getElements(count) {
-    const result = [];
+export const defaultValues = {
+    animationType: "square",
+    animationDuration: 1000
+};
 
-    while (result.length !== count) {
-        let newElement = RandomInt(1, count);
+class SortingVisualizer {
+    constructor({
+        animationType,
+        animationDuration
+    }) {
+        this.animationType = animationType;
+        this.animationDuration = animationDuration;
 
-        if (result.indexOf(newElement) === -1) {
-            result.push(newElement);
-        }
     }
 
-    return result;
-}
+    preview({ elements }) {
+        let content = "";
 
-export default function SortingVisualizer({
-    countOfElements,
-    animationType,
-    animationDuration: animationDurationInSeconds
-}) {
-    const elements = getElements(countOfElements);
-    const steps = BubbleSort([...elements]);
-    let index = 0;
+        for (let i = 0; i < elements.length; i++) {
+            content += `<div id="${i}" class="element-container" style="order: ${i};"><div class="element">${elements[i]}</div></div>`;
+        }
 
-    let content = "";
-
-    for (let i = 0; i < elements.length; i++) {
-        content += `<div id="${i}" class="element-container" style="order: ${i};"><div class="element">${elements[i]}</div></div>`;
+        document.querySelector("#elements").innerHTML = content;
     }
 
-    document.getElementsByClassName("elements-container")[0].innerHTML = content;
+    start({ steps }) {
+        let index = 0;
 
-    const firstElement = document.getElementsByClassName("element-container")[0];
-    const height = firstElement.clientHeight;
-    const width = firstElement.clientWidth;
-    const border = firstElement.clientTop;
-    const margin = parseInt((firstElement.currentStyle || window.getComputedStyle(firstElement)).marginTop);
+        const firstElement = document.getElementsByClassName("element-container")[0];
+        const height = firstElement.clientHeight;
+        const width = firstElement.clientWidth;
+        const border = firstElement.clientTop;
+        const margin = parseInt((firstElement.currentStyle || window.getComputedStyle(firstElement)).marginTop);
 
-    [].forEach.call(document.getElementsByClassName("element-container"), function (e) {
-        e.style.animationDuration = animationDurationInSeconds + "s";
-    });
+        [].forEach.call(document.getElementsByClassName("element-container"), function (e) {
+            e.style.animationDuration = this.animationDuration + "ms";
+        }, this);
 
-    let leftId = null;
-    let leftIndex = null;
-    let rightId = null;
-    let rightIndex = null;
-    let countOfFinishedAnimations = 2;
+        let leftId = null;
+        let leftIndex = null;
+        let rightId = null;
+        let rightIndex = null;
+        let countOfFinishedAnimations = 2;
 
-    let tick = (e) => {
-        if (e) {
-            countOfFinishedAnimations++;
+        let tick = (e) => {
+            if (e) {
+                countOfFinishedAnimations++;
 
-            if (e.target.id === leftId) {
-                setElementOrder(leftId, rightIndex);
+                if (e.target.id === leftId) {
+                    setElementOrder(leftId, rightIndex);
+                }
+
+                if (e.target.id === rightId) {
+                    setElementOrder(rightId, leftIndex);
+                }
+
+                if (index === steps.length) {
+                    return;
+                }
             }
 
-            if (e.target.id === rightId) {
-                setElementOrder(rightId, leftIndex);
+            if (countOfFinishedAnimations === 2) {
+                countOfFinishedAnimations = 0;
+
+                [leftIndex, rightIndex] = steps[index++];
+
+                if (leftId && rightId) {
+                    removeElementAnimation(leftId);
+                    removeElementAnimation(rightId);
+                }
+
+                leftId = document.querySelector(`[style*="order: ${leftIndex}"]`).getAttribute("id");
+                rightId = document.querySelector(`[style*="order: ${rightIndex}"]`).getAttribute("id");
+
+                insertAnimation({
+                    leftIndex,
+                    rightIndex,
+                    height,
+                    width,
+                    margin,
+                    border,
+                    animationType: this.animationType
+                }, leftId, rightId);
             }
+        };
 
-            if (index === steps.length) {
-                return;
-            }
-        }
+        document.getElementsByClassName("elements-container")[0].addEventListener("animationend", tick, false);
 
-        if (countOfFinishedAnimations === 2) {
-            countOfFinishedAnimations = 0;
-
-            [leftIndex, rightIndex] = steps[index++];
-
-            if (leftId && rightId) {
-                removeElementAnimation(leftId);
-                removeElementAnimation(rightId);
-            }
-
-            leftId = document.querySelector(`[style*="order: ${leftIndex}"]`).getAttribute("id");
-            rightId = document.querySelector(`[style*="order: ${rightIndex}"]`).getAttribute("id");
-
-            insertAnimation({
-                leftIndex,
-                rightIndex,
-                height,
-                width,
-                margin,
-                border,
-                animationType
-            }, leftId, rightId);
-        }
-    };
-
-    document.getElementsByClassName("elements-container")[0].addEventListener("animationend", tick, false);
-
-    tick();
+        tick();
+    }
 }
+
+export default SortingVisualizer;
