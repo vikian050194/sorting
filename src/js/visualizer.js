@@ -1,63 +1,15 @@
 import {
-    nameOfAnimationForLeftElement,
-    nameOfAnimationForRightElement
-} from "./animations";
-import {
-    SquareAnimation,
-    CircleAnimation
+    TestAnimation
+    // SquareAnimation,
+    // CircleAnimation
 } from "./animations";
 
-function setElementAnimation(id, name) {
-    ((e) => {
-        e.offsetHeight; //it forces browser to calculate (each elements properties) and DOM reflow occurred before required changes in CSS
-        e.style.animationName = name;
-    })(document.getElementById(`${id}`));
-}
-
-function removeElementAnimation(id) {
-    document.getElementById(id).style.removeProperty("animation-name");
-}
-
-function setElementOrder(id, order) {
-    document.getElementById(`${id}`).style.order = order;
-}
-
-function insertAnimation(options, leftId, rightId) {
-    //it's really interesting problem: without setTimeout nothing works
-    //
-    setTimeout(() => {
-        setElementAnimation(leftId, nameOfAnimationForLeftElement);
-        setElementAnimation(rightId, nameOfAnimationForRightElement);
-
-        let animation = document.getElementById("animation");
-
-        if (!animation) {
-            animation = document.createElement("style");
-            animation.type = "text/css";
-            animation.setAttribute("id", "animation");
-            document.getElementsByTagName("head")[0].appendChild(animation);
-        }
-
-        let animationDescription = "";
-        switch (options.animationType) {
-            case "square":
-                animationDescription = new SquareAnimation().swap(options);
-                break;
-            case "circle":
-                animationDescription = new CircleAnimation().swap(options);
-                break;
-            default:
-
-                break;
-        }
-
-        animation.innerHTML = animationDescription;
-
-    }, 0);
-}
+// function setElementOrder(id, order) {
+//     document.getElementById(`${id}`).style.order = order;
+// }
 
 export const defaultValues = {
-    animationType: "square",
+    animationType: "test",
     animationDuration: 1000
 };
 
@@ -81,70 +33,135 @@ class SortingVisualizer {
         document.querySelector("#elements").innerHTML = content;
     }
 
-    start({ steps }) {
-        let index = 0;
+    applySelect(action) {
+        document.querySelector(`[style*="order: ${action.index}"]`);
+    }
 
-        const firstElement = document.getElementsByClassName("element-container")[0];
-        const height = firstElement.clientHeight;
-        const width = firstElement.clientWidth;
-        const border = firstElement.clientTop;
-        const margin = parseInt((firstElement.currentStyle || window.getComputedStyle(firstElement)).marginTop);
+    applyAction(action) {
+        switch (action.key) {
+            case "select":
+                return this.applySelect(action);
+            case "swap":
+                return this.applySwap(action);
+            default:
+                break;
+        }
+    }
 
-        [].forEach.call(document.getElementsByClassName("element-container"), function (e) {
-            e.style.animationDuration = this.animationDuration + "ms";
-        }, this);
-
-        let leftId = null;
-        let leftIndex = null;
-        let rightId = null;
-        let rightIndex = null;
-        let countOfFinishedAnimations = 2;
-
-        let tick = (e) => {
-            if (e) {
-                countOfFinishedAnimations++;
-
-                if (e.target.id === leftId) {
-                    setElementOrder(leftId, rightIndex);
-                }
-
-                if (e.target.id === rightId) {
-                    setElementOrder(rightId, leftIndex);
-                }
-
-                if (index === steps.length) {
-                    return;
-                }
-            }
-
-            if (countOfFinishedAnimations === 2) {
-                countOfFinishedAnimations = 0;
-
-                [leftIndex, rightIndex] = steps[index++];
-
-                if (leftId && rightId) {
-                    removeElementAnimation(leftId);
-                    removeElementAnimation(rightId);
-                }
-
-                leftId = document.querySelector(`[style*="order: ${leftIndex}"]`).getAttribute("id");
-                rightId = document.querySelector(`[style*="order: ${rightIndex}"]`).getAttribute("id");
-
-                insertAnimation({
-                    leftIndex,
-                    rightIndex,
-                    height,
-                    width,
-                    margin,
-                    border,
-                    animationType: this.animationType
-                }, leftId, rightId);
-            }
+    start({ actions }) {
+        const linear = (timeFraction) => {
+            return timeFraction;
         };
 
-        document.getElementsByClassName("elements-container")[0].addEventListener("animationend", tick, false);
+        // function quad(timeFraction) {
+        //     return Math.pow(timeFraction, 2);
+        // }
 
-        tick();
+        const element = document.getElementById("3");
+
+        const startAnimation = ({ timing, draw, duration }) => {
+
+            let start = performance.now();
+            console.info({ start });
+
+            requestAnimationFrame(function animate(time) {
+                // 
+                // const time = performance.now();
+                // console.info({ time });
+                const delta = time - start;
+                console.info({ delta });
+                let timeFraction = delta / duration;
+                if (timeFraction < 0) {
+                    timeFraction = 0;
+                }
+                if (timeFraction > 1) {
+                    timeFraction = 1;
+                }
+
+                const progress = timing(timeFraction);
+
+                draw(progress);
+
+                if (timeFraction < 1) {
+                    requestAnimationFrame(animate);
+                }
+
+            });
+        };
+
+        const dummy = new TestAnimation();
+        const calc = dummy.move();
+
+        startAnimation({
+            duration: 5000,
+            timing: linear,
+            draw(progress) {
+                const result = calc(progress);
+                console.info(result);
+                element.style.bottom = result.bottom;
+            }
+        });
+
+        for (const action of actions) {
+            this.applyAction(action);
+        }
+
+        // const firstElement = document.getElementsByClassName("element-container")[0];
+        // const height = firstElement.clientHeight;
+        // const width = firstElement.clientWidth;
+        // const border = firstElement.clientTop;
+        // const margin = parseInt((firstElement.currentStyle || window.getComputedStyle(firstElement)).marginTop);
+
+        // [].forEach.call(document.getElementsByClassName("element-container"), function (e) {
+        //     e.style.animationDuration = this.animationDuration + "ms";
+        // }, this);
+
+        // let leftId = null;
+        // let leftIndex = null;
+        // let rightId = null;
+        // let rightIndex = null;
+        // let countOfFinishedAnimations = 2;
+
+        // let tick = (e) => {
+        //     if (e) {
+        //         countOfFinishedAnimations++;
+
+        //         if (e.target.id === leftId) {
+        //             setElementOrder(leftId, rightIndex);
+        //         }
+
+        //         if (e.target.id === rightId) {
+        //             setElementOrder(rightId, leftIndex);
+        //         }
+
+        //         if (index === actions.length) {
+        //             return;
+        //         }
+        //     }
+
+        //     if (countOfFinishedAnimations === 2) {
+        //         countOfFinishedAnimations = 0;
+
+        //         if (leftId && rightId) {
+        //             removeElementAnimation(leftId);
+        //             removeElementAnimation(rightId);
+        //         }
+
+        //         leftId = document.querySelector(`[style*="order: ${leftIndex}"]`).getAttribute("id");
+        //         rightId = document.querySelector(`[style*="order: ${rightIndex}"]`).getAttribute("id");
+
+        //         insertAnimation({
+        //             leftIndex,
+        //             rightIndex,
+        //             height,
+        //             width,
+        //             margin,
+        //             border,
+        //             animationType: this.animationType,
+        //             animationDuration: this.animationDuration
+        //         }, leftId, rightId);
+        //     }
+        // };
     }
 }
 

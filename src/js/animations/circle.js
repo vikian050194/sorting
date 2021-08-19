@@ -1,8 +1,5 @@
 import BaseAnimation from "./base";
 
-const nameOfAnimationForLeftElement = "animationForLeftElement";
-const nameOfAnimationForRightElement = "animationForRightElement";
-
 export default class CircleAnimation extends BaseAnimation {
     get key() {
         return "circle";

@@ -3,7 +3,7 @@ export default class BaseAnimation {
         throw new Error("not implemented");
     }
 
-    setAnimationName (animation, name) {
-        return animation.replace("{NAME}", name);
-    }
+    // select(index){
+        
+    // }
 }

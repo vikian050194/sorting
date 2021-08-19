@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let elementsCount = 7;
     let elements = getElements(elementsCount);
 
-    const ss = { };
+    const ss = {};
     const sorts = [
         TestSort,
         BubbleSort
@@ -80,6 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const visualizer = new Visualizer({ animationType, animationDuration });
     visualizer.preview({ elements });
+    visualizer.start({ actions: [] });
 
     document.getElementById("shuffle").addEventListener("click", () => {
         elements = getElements(elementsCount);
