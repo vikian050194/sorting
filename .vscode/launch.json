@@ -9,16 +9,16 @@
             "webRoot": "${workspaceFolder}"
         },
         {
-            "name": "Run mocha",
+            "name": "Debug tests",
             "type": "node",
             "request": "launch",
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "stopOnEntry": false,
             "args": [
                 "${file}",
+                "--colors",
                 "--no-timeouts",
-                "--require",
-                "babel-register"
+                "--require", "@babel/register"
             ],
             "cwd": "${workspaceRoot}",
             "runtimeExecutable": null,

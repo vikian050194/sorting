@@ -1,67 +1,18 @@
+import { NodeBuilder } from "fandom";
 import {
-    nameOfAnimationForLeftElement,
-    nameOfAnimationForRightElement
-} from "./animations";
-import {
+    TestAnimation,
     SquareAnimation,
     CircleAnimation
 } from "./animations";
 
-function setElementAnimation(id, name) {
-    ((e) => {
-        e.offsetHeight; //it forces browser to calculate (each elements properties) and DOM reflow occurred before required changes in CSS
-        e.style.animationName = name;
-    })(document.getElementById(`${id}`));
-}
-
-function removeElementAnimation(id) {
-    document.getElementById(id).style.removeProperty("animation-name");
-}
-
-function setElementOrder(id, order) {
-    document.getElementById(`${id}`).style.order = order;
-}
-
-function insertAnimation(options, leftId, rightId) {
-    //it's really interesting problem: without setTimeout nothing works
-    //
-    setTimeout(() => {
-        setElementAnimation(leftId, nameOfAnimationForLeftElement);
-        setElementAnimation(rightId, nameOfAnimationForRightElement);
-
-        let animation = document.getElementById("animation");
-
-        if (!animation) {
-            animation = document.createElement("style");
-            animation.type = "text/css";
-            animation.setAttribute("id", "animation");
-            document.getElementsByTagName("head")[0].appendChild(animation);
-        }
-
-        let animationDescription = "";
-        switch (options.animationType) {
-            case "square":
-                animationDescription = new SquareAnimation().swap(options);
-                break;
-            case "circle":
-                animationDescription = new CircleAnimation().swap(options);
-                break;
-            default:
-
-                break;
-        }
-
-        animation.innerHTML = animationDescription;
-
-    }, 0);
-}
+import * as functions from "./functions";
 
 export const defaultValues = {
     animationType: "square",
     animationDuration: 1000
 };
 
-class SortingVisualizer {
+class Visualizer {
     constructor({
         animationType,
         animationDuration
@@ -69,83 +20,109 @@ class SortingVisualizer {
         this.animationType = animationType;
         this.animationDuration = animationDuration;
 
+        this.nb = new NodeBuilder();
+    }
+
+    setAnimationDuration(value) {
+        this.animationDuration = value;
+    }
+
+    setAnimationType(value) {
+        this.animationType = value;
+        switch (value) {
+            case "square":
+                this.animation = new SquareAnimation();
+                break;
+            case "circle":
+                this.animation = new CircleAnimation();
+                break;
+            case "test":
+                this.animation = new TestAnimation();
+                break;
+            default:
+                break;
+        }
     }
 
     preview({ elements }) {
-        let content = "";
+        this.nb.reset();
 
         for (let i = 0; i < elements.length; i++) {
-            content += `<div id="${i}" class="element-container" style="order: ${i};"><div class="element">${elements[i]}</div></div>`;
+            this.nb.div({ id: elements[i], class: "element-container", style: `order: ${i}` }).withDiv({ class: "element" }).withText(elements[i]);
         }
 
-        document.querySelector("#elements").innerHTML = content;
+        const container = document.querySelector("#elements");
+
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+
+        container.append(...this.nb.build());
     }
 
-    start({ steps }) {
-        let index = 0;
+    startAnimation = ({ timing, draw, duration }) => {
+        let start = performance.now();
+        let finish = false;
+        // console.info({ start });
 
-        const firstElement = document.getElementsByClassName("element-container")[0];
-        const height = firstElement.clientHeight;
-        const width = firstElement.clientWidth;
-        const border = firstElement.clientTop;
-        const margin = parseInt((firstElement.currentStyle || window.getComputedStyle(firstElement)).marginTop);
+        return new Promise((resolve) =>
+            requestAnimationFrame(function animate(now) {
+                // const time = performance.now();
+                const delta = now - start;
+                let timeFraction = delta / duration;
 
-        [].forEach.call(document.getElementsByClassName("element-container"), function (e) {
-            e.style.animationDuration = this.animationDuration + "ms";
-        }, this);
-
-        let leftId = null;
-        let leftIndex = null;
-        let rightId = null;
-        let rightIndex = null;
-        let countOfFinishedAnimations = 2;
-
-        let tick = (e) => {
-            if (e) {
-                countOfFinishedAnimations++;
-
-                if (e.target.id === leftId) {
-                    setElementOrder(leftId, rightIndex);
+                if (timeFraction < 0) {
+                    timeFraction = 0;
                 }
 
-                if (e.target.id === rightId) {
-                    setElementOrder(rightId, leftIndex);
+                if (timeFraction >= 1) {
+                    timeFraction = 1;
+                    finish = true;
                 }
 
-                if (index === steps.length) {
-                    return;
+                // console.info({ timeFraction });
+                const progress = timing(timeFraction);
+
+                draw(progress);
+
+                if (finish) {
+                    resolve();
+                } else {
+                    requestAnimationFrame(animate);
+                }
+            })
+        );
+    };
+
+    async applyAction(action) {
+        const { animationDuration } = this;
+        const func = this.animation[action.key]();
+        const elements = action.index.map(i => {
+            return {
+                element: document.querySelector(`[style*="order: ${i}"]`),
+                index: i
+            };
+        });
+
+        await this.startAnimation({
+            duration: animationDuration,
+            timing: functions.linear,
+            draw(progress) {
+                for (const { element, index } of elements) {
+                    const styles = func(index, action, progress);
+                    for (const key in styles) {
+                        element.style[key] = styles[key];
+                    }
                 }
             }
+        });
+    }
 
-            if (countOfFinishedAnimations === 2) {
-                countOfFinishedAnimations = 0;
-
-                [leftIndex, rightIndex] = steps[index++];
-
-                if (leftId && rightId) {
-                    removeElementAnimation(leftId);
-                    removeElementAnimation(rightId);
-                }
-
-                leftId = document.querySelector(`[style*="order: ${leftIndex}"]`).getAttribute("id");
-                rightId = document.querySelector(`[style*="order: ${rightIndex}"]`).getAttribute("id");
-
-                insertAnimation({
-                    leftIndex,
-                    rightIndex,
-                    height,
-                    width,
-                    margin,
-                    border,
-                    animationType: this.animationType
-                }, leftId, rightId);
-            }
-        };
-
-        document.getElementsByClassName("elements-container")[0].addEventListener("animationend", tick, false);
-
-        tick();
+    async start({ actions }) {
+        for (const action of actions) {
+            await this.applyAction(action);
+        }
     }
 }
 
-export default SortingVisualizer;
+export default Visualizer;

@@ -1,7 +1,8 @@
 const path = require("path");
+const ESLintPlugin = require("eslint-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const buildFolderName = "public";
+const buildFolderName = "build";
 
 module.exports = {
     mode: "development",
@@ -52,15 +53,28 @@ module.exports = {
     plugins: [
         new MiniCssExtractPlugin({
             filename: "bundle.css"
-        })
+        }),
+        new ESLintPlugin({})
     ],
     devServer: {
-        index: path.resolve(__dirname, buildFolderName,"index.html"),
-        contentBase: path.resolve(__dirname, buildFolderName),
-        publicPath: "/",
+        host: "127.0.0.1",
         port: 8080,
-        watchContentBase: false,
+        hot: false,
         open: false,
-        inline: true
+        historyApiFallback: true,
+        watchFiles: ["src/**/*"],
+        static: {
+            directory: path.join(__dirname, buildFolderName),
+            publicPath: "/",
+            watch: false
+        },
+        client: {
+            overlay: {
+                errors: true,
+                warnings: false
+            },
+            progress: true,
+            reconnect: true
+        }
     }
 };

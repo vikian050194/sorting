@@ -6,10 +6,4 @@ export default class BaseSort {
     sort(){
         throw new Error("not implemented");
     }
-
-    swap(e, i, j) {
-        let temp = e[i];
-        e[i] = e[j];
-        e[j] = temp;
-    }
 }

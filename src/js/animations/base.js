@@ -3,7 +3,14 @@ export default class BaseAnimation {
         throw new Error("not implemented");
     }
 
-    setAnimationName (animation, name) {
-        return animation.replace("{NAME}", name);
+    select() {
+        return (index, action, progress = 0) => {
+            const color = Math.floor(255 * progress).toString(16);
+            const style = {
+                borderColor: `#${color}${color}00`
+            };
+
+            return style;
+        };
     }
 }

@@ -1,3 +1,4 @@
+import "regenerator-runtime/runtime";
 import RandomInt from "random-int";
 import Visualizer, { defaultValues } from "./visualizer";
 import {
@@ -20,11 +21,15 @@ function getElements(count) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    let sortType = "bubble";
     let { animationType, animationDuration } = defaultValues;
     let elementsCount = 7;
     let elements = getElements(elementsCount);
 
-    const ss = { };
+    const visualizer = new Visualizer({ animationType, animationDuration });
+    visualizer.preview({ elements });
+
+    const ss = {};
     const sorts = [
         TestSort,
         BubbleSort
@@ -34,8 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const si = new sort();
         ss[si.key] = si;
     }
-
-    let sortType = "test";
 
     const $sortType = document.querySelector("#sort-type");
 
@@ -70,16 +73,15 @@ document.addEventListener("DOMContentLoaded", function () {
     $animationType.options.selectedIndex = animationOptionIndex;
     $animationType.addEventListener("change", ({ target }) => {
         animationType = target.selectedOptions[0].value;
+        visualizer.setAnimationType(animationType);
     });
 
     const $animationDuration = document.getElementById("duration");
     $animationDuration.value = animationDuration;
     $animationDuration.addEventListener("change", ({ target }) => {
         animationDuration = parseInt(target.value);
+        visualizer.setAnimationDuration(animationDuration);
     });
-
-    const visualizer = new Visualizer({ animationType, animationDuration });
-    visualizer.preview({ elements });
 
     document.getElementById("shuffle").addEventListener("click", () => {
         elements = getElements(elementsCount);
@@ -90,4 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
         visualizer.start(instruction);
     });
     document.getElementById("stop").addEventListener("click", visualizer.stop);
+
+    visualizer.setAnimationType(animationType);
+    visualizer.setAnimationDuration(animationDuration);
 });
