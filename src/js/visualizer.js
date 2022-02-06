@@ -1,4 +1,4 @@
-import { NodeBuilder } from "fandom";
+import { TreeBuilder, TreeConverter } from "fandom";
 import {
     TestAnimation,
     SquareAnimation,
@@ -20,7 +20,8 @@ class Visualizer {
         this.animationType = animationType;
         this.animationDuration = animationDuration;
 
-        this.nb = new NodeBuilder();
+        this.tb = new TreeBuilder();
+        this.tc = new TreeConverter();
     }
 
     setAnimationDuration(value) {
@@ -45,10 +46,8 @@ class Visualizer {
     }
 
     preview({ elements }) {
-        this.nb.reset();
-
         for (let i = 0; i < elements.length; i++) {
-            this.nb.div({ id: elements[i], class: "element-container", style: `order: ${i}` }).withDiv({ class: "element" }).withText(elements[i]);
+            this.tb.div({ id: elements[i], class: "element-container", style: `order: ${i}` }).div({ class: "element" }).text(elements[i]).close().close();
         }
 
         const container = document.querySelector("#elements");
@@ -57,7 +56,13 @@ class Visualizer {
             container.removeChild(container.firstChild);
         }
 
-        container.append(...this.nb.build());
+        const tree = this.tb.build();
+
+        const children = this.tc.convert(tree);
+
+        for (const c of children) {
+            container.appendChild(c);
+        }
     }
 
     startAnimation = ({ timing, draw, duration }) => {
