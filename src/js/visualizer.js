@@ -1,4 +1,4 @@
-import { TreeBuilder, TreeConverter } from "fandom";
+import { Couturier, replace, convert } from "fandom";
 import {
     TestAnimation,
     SquareAnimation,
@@ -19,9 +19,6 @@ class Visualizer {
     }) {
         this.animationType = animationType;
         this.animationDuration = animationDuration;
-
-        this.tb = new TreeBuilder();
-        this.tc = new TreeConverter();
     }
 
     setAnimationDuration(value) {
@@ -46,23 +43,18 @@ class Visualizer {
     }
 
     preview({ elements }) {
+        const couturier = new Couturier();
+
         for (let i = 0; i < elements.length; i++) {
-            this.tb.div({ id: elements[i], class: "element-container", style: `order: ${i}` }).div({ class: "element" }).text(elements[i]).close().close();
+            couturier.div({ id: elements[i], class: "element-container", style: `order: ${i}` }).div({ class: "element" }).text(elements[i]).close().close();
         }
 
         const container = document.querySelector("#elements");
 
-        while (container.firstChild) {
-            container.removeChild(container.firstChild);
-        }
+        const models = couturier.done();
+        const domElements = convert(models);
 
-        const tree = this.tb.build();
-
-        const children = this.tc.convert(tree);
-
-        for (const c of children) {
-            container.appendChild(c);
-        }
+        replace(container, domElements);
     }
 
     startAnimation = ({ timing, draw, duration }) => {
