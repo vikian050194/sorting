@@ -1,45 +1,23 @@
 import { Couturier, replace, convert } from "fandom";
-import {
-    TestAnimation,
-    SquareAnimation,
-    CircleAnimation
-} from "./animations";
-
 import * as functions from "./functions";
-
-export const defaultValues = {
-    animationType: "square",
-    animationDuration: 1000
-};
 
 class Visualizer {
     constructor({
+        animations,
         animationType,
         animationDuration
     }) {
+        this.animations = animations;
         this.animationType = animationType;
         this.animationDuration = animationDuration;
     }
 
     setAnimationDuration(value) {
-        this.animationDuration = value;
+        this.animationDuration = value * 1000;
     }
 
     setAnimationType(value) {
         this.animationType = value;
-        switch (value) {
-            case "square":
-                this.animation = new SquareAnimation();
-                break;
-            case "circle":
-                this.animation = new CircleAnimation();
-                break;
-            case "test":
-                this.animation = new TestAnimation();
-                break;
-            default:
-                break;
-        }
     }
 
     preview({ elements }) {
@@ -116,6 +94,7 @@ class Visualizer {
     }
 
     async start({ actions }) {
+        this.animation = this.animations[this.animationType];
         for (const action of actions) {
             await this.applyAction(action);
         }

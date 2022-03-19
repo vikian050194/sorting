@@ -1,10 +1,16 @@
 import "regenerator-runtime/runtime";
+import { Couturier, convert, insert, replace } from "fandom";
 import RandomInt from "random-int";
-import Visualizer, { defaultValues } from "./visualizer";
+import Visualizer from "./visualizer";
 import {
     TestSort,
     BubbleSort
 } from "./algorithms";
+import {
+    TestAnimation,
+    SquareAnimation,
+    CircleAnimation
+} from "./animations";
 
 function getElements(count) {
     const result = [];
@@ -21,13 +27,29 @@ function getElements(count) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    const couturier = new Couturier();
+
+    const $root = document.getElementById("root");
+
+    const $main = convert(couturier.div({ id: "main", class: "main-container" }).close().done())[0];
+
+    const $options = convert(couturier.div({ id: "options", class: "options-container" }).close().done())[0];
+    const $elements = convert(couturier.div({ id: "elements", class: "elements-container" }).close().done())[0];
+
+    insert($main, [
+        $options,
+        $elements
+    ]);
+
+    insert($root, [
+        $main
+    ]);
+
     let sortType = "bubble";
-    let { animationType, animationDuration } = defaultValues;
+    let animationType = "square";
+    let animationDuration = 1;
     let elementsCount = 7;
     let elements = getElements(elementsCount);
-
-    const visualizer = new Visualizer({ animationType, animationDuration });
-    visualizer.preview({ elements });
 
     const ss = {};
     const sorts = [
@@ -40,58 +62,79 @@ document.addEventListener("DOMContentLoaded", function () {
         ss[si.key] = si;
     }
 
-    const $sortType = document.querySelector("#sort-type");
+    const aa = {};
+    const animations = [
+        TestAnimation,
+        SquareAnimation,
+        CircleAnimation
+    ];
 
-    const sortOptions = Object.keys(ss).map(value => {
-        const element = document.createElement("option");
-        element.setAttribute("value", value);
-        const content = document.createTextNode(value);
-        element.appendChild(content);
-        return element;
-    });
+    for (const animation of animations) {
+        const ai = new animation();
+        aa[ai.key] = ai;
+    }
 
-    $sortType.append(...sortOptions);
+    const visualizer = new Visualizer({ animationType, animationDuration, animations: aa });
+    visualizer.preview({ elements });
 
-    const $sortOption = [...$sortType.options].find(({ value }) => value === sortType);
-    const sortOptionIndex = [...$sortType.options].indexOf($sortOption);
-    $sortType.options.selectedIndex = sortOptionIndex;
-    $sortType.addEventListener("change", ({ target }) => {
-        sortType = target.selectedOptions[0].value;
-    });
+    const $sortType = convert(couturier.div({ id: "sort-type" }).close().done())[0];
 
-    const $elementsCount = document.querySelector("#count");
-    $elementsCount.value = elementsCount;
-    $elementsCount.addEventListener("change", ({ target }) => {
+    const renderSortType = () => {
+        for (const key in ss) {
+            const selected = key == sortType ? "option selected" : "option";
+            couturier.div({ class: selected }).text(key).onClick(() => { sortType = key; renderSortType(); }).close();
+        }
+
+        replace($sortType, convert(couturier.done()));
+    };
+
+    renderSortType();
+
+    const $animationType = convert(couturier.div({ id: "animation-type" }).close().done())[0];
+
+    const renderAnimationType = () => {
+        for (const key in aa) {
+            const selected = key == animationType ? "option selected" : "option";
+            couturier.div({ class: selected }).text(key).onClick(() => { animationType = key; renderAnimationType(); }).close();
+        }
+
+        replace($animationType, convert(couturier.done()));
+    };
+
+    renderAnimationType();
+
+    const $elementsCount = convert(couturier.div().input({ value: elementsCount, type: "number", min: 5, max: 21 }).onChange(({ target }) => {
         elementsCount = parseInt(target.value);
         elements = getElements(elementsCount);
         visualizer.preview({ elements });
-    });
+    }).close().done())[0];
 
-    const $animationType = document.querySelector("#animation-type");
-    const $animationOption = [...$animationType.options].find(({ value }) => value === animationType);
-    const animationOptionIndex = [...$animationType.options].indexOf($animationOption);
-    $animationType.options.selectedIndex = animationOptionIndex;
-    $animationType.addEventListener("change", ({ target }) => {
-        animationType = target.selectedOptions[0].value;
-        visualizer.setAnimationType(animationType);
-    });
-
-    const $animationDuration = document.getElementById("duration");
-    $animationDuration.value = animationDuration;
-    $animationDuration.addEventListener("change", ({ target }) => {
+    const $animationDuration = convert(couturier.div().input({ value: animationDuration, type: "number", min: 1, max: 60 }).onChange(({ target }) => {
         animationDuration = parseInt(target.value);
-        visualizer.setAnimationDuration(animationDuration);
-    });
+    }).close().done())[0];
 
-    document.getElementById("shuffle").addEventListener("click", () => {
+    couturier.div({ id: "actions" });
+    couturier.button().text("Shuffle").onClick(() => {
         elements = getElements(elementsCount);
         visualizer.preview({ elements });
-    });
-    document.getElementById("start").addEventListener("click", () => {
+    }).close();
+    couturier.button().text("Start").onClick(() => {
         const instruction = ss[sortType].sort(elements);
+        visualizer.setAnimationType(animationType);
+        visualizer.setAnimationDuration(animationDuration);
         visualizer.start(instruction);
-    });
-    document.getElementById("stop").addEventListener("click", visualizer.stop);
+    }).close();
+    couturier.button().text("Stop").onClick(visualizer.stop).close();
+    couturier.close();
+    const $actions = convert(couturier.done())[0];
+
+    insert($options, [
+        $sortType,
+        $animationType,
+        $elementsCount,
+        $animationDuration,
+        $actions
+    ]);
 
     visualizer.setAnimationType(animationType);
     visualizer.setAnimationDuration(animationDuration);

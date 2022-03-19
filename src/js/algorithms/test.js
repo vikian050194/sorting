@@ -26,6 +26,8 @@ export default class TestSort extends BaseSort {
         actions.push(new SelectAction(0));
         actions.push(new SwapAction(0, 1));
         actions.push(new SwapAction(1, 2));
+        actions.push(new SelectAction(3));
+        actions.push(new SelectAction(4));
 
         return {
             actions,
