@@ -3,25 +3,45 @@ body {
     margin: 0px;
 }
 
-.main-container {
+.container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-evenly;
     height: 100vh;
     width: 100vw;
 }
 
-.elements-container {
-    display: inline-flex;
+header {
+    position: sticky;
+    top: 0px;
+    padding: 8px 0;
+    background: white;
 }
 
-.element {
-    min-width: 50px;
-    font-size: 25px;
-    text-align: center;
-    display: table-cell;
-    vertical-align: middle;
+main {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.options {
+    display: flex;
+}
+
+.options>div {
+    margin: 0px 5px;
+}
+
+.option {
+    cursor: pointer;
+}
+
+.selected {
+    color: green;
+}
+
+.elements {
+    display: inline-flex;
 }
 
 .element-container {
@@ -40,18 +60,17 @@ body {
     position: relative;
 }
 
-.option {
-    cursor: pointer;
+.element {
+    min-width: 50px;
+    font-size: 25px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
 }
 
-.selected {
-    color: green;
-}
-
-.options-container {
-    display: flex;
-}
-
-.options-container>div {
-    margin: 0px 5px;
+footer {
+    position: sticky;
+    bottom: 0px;
+    padding: 8px 0;
+    background: white;
 }

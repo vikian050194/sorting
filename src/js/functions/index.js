@@ -1,21 +1,7 @@
-export const makeEaseOut = (timing) => {
-    return (timeFraction) => {
-        return 1 - timing(1 - timeFraction);
-    };
-};
-
-export const makeEaseInOut = (timing) => {
-    return (timeFraction) => {
-        if (timeFraction < .5)
-            return timing(2 * timeFraction) / 2;
-        else
-            return (2 - timing(2 * (1 - timeFraction))) / 2;
-    };
-};
-
-export * from "./linear";
-export * from "./quad";
-export * from "./circ";
-export * from "./bow";
-export * from "./bounce";
-export * from "./elastic";
+export { default as TestTimeFunction } from "./test";
+export { default as LinearTimeFunction } from "./linear";
+export { default as QuadTimeFunction } from "./quad";
+export { default as CircleTimeFunction } from "./circ";
+export { default as BowTimeFunction } from "./bow";
+export { default as BounceTimeFunction } from "./bounce";
+export { default as ElasticTimeFunction } from "./elastic";

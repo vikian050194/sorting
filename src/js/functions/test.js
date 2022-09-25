@@ -1,8 +1,8 @@
 import BaseTimeFunction from "./base";
 
-export default class LinearTimeFunction extends BaseTimeFunction {
+export default class TestTimeFunction extends BaseTimeFunction {
     get key() {
-        return "linear";
+        return "test";
     }
 
     calculate(timeFraction) {

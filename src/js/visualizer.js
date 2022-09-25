@@ -1,13 +1,16 @@
-import { Couturier, replace, convert } from "fandom";
-import * as functions from "./functions";
+import { Builder, replace, convert } from "fandom";
 
 class Visualizer {
     constructor({
         animations,
+        functions,
+        functionName,
         animationType,
         animationDuration
     }) {
         this.animations = animations;
+        this.functions = functions;
+        this.functionName = functionName;
         this.animationType = animationType;
         this.animationDuration = animationDuration;
     }
@@ -20,16 +23,20 @@ class Visualizer {
         this.animationType = value;
     }
 
+    setTimeFunction(value) {
+        this.functionName = value;
+    }
+
     preview({ elements }) {
-        const couturier = new Couturier();
+        const builder = new Builder();
 
         for (let i = 0; i < elements.length; i++) {
-            couturier.div({ id: elements[i], class: "element-container", style: `order: ${i}` }).div({ class: "element" }).text(elements[i]).close().close();
+            builder.div({ id: elements[i], class: "element-container", style: `order: ${i}` }).div({ class: "element" }).text(elements[i]).close().close();
         }
 
-        const container = document.querySelector("#elements");
+        const container = document.getElementById("elements");
 
-        const models = couturier.done();
+        const models = builder.done();
         const domElements = convert(models);
 
         replace(container, domElements);
@@ -71,7 +78,8 @@ class Visualizer {
 
     async applyAction(action) {
         const { animationDuration } = this;
-        const func = this.animation[action.key]();
+        const animationFunc = this.animation[action.key]();
+        const timeFunc = this.functions[this.functionName];
         const elements = action.index.map(i => {
             return {
                 element: document.querySelector(`[style*="order: ${i}"]`),
@@ -81,10 +89,10 @@ class Visualizer {
 
         await this.startAnimation({
             duration: animationDuration,
-            timing: functions.linear,
+            timing: timeFunc,
             draw(progress) {
                 for (const { element, index } of elements) {
-                    const styles = func(index, action, progress);
+                    const styles = animationFunc(index, action, progress);
                     for (const key in styles) {
                         element.style[key] = styles[key];
                     }

@@ -1,4 +1,5 @@
 const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
 const ESLintPlugin = require("eslint-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
@@ -6,19 +7,14 @@ const buildFolderName = "build";
 
 module.exports = {
     mode: "development",
-    entry: ["./src/js/index.js", "./src/css/index.css", "./src/index.html", "./src/favicon.svg"],
+    entry: ["./src/js/index.js", "./src/css/index.css"],
     devtool: "inline-source-map",
     module: {
         rules: [
             {
                 test: /\.js$/,
                 exclude: /(node_modules)/,
-                use: {
-                    loader: "babel-loader",
-                    options: {
-                        presets: ["@babel/preset-env"]
-                    }
-                }
+                loader: "babel-loader"
             },
             {
                 test: /\.css$/,
@@ -54,7 +50,13 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: "bundle.css"
         }),
-        new ESLintPlugin({})
+        new ESLintPlugin({}),
+        new CopyPlugin({
+            patterns: [
+                "src/index.html",
+                "src/favicon.svg"
+            ]
+        })
     ],
     devServer: {
         host: "127.0.0.1",

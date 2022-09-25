@@ -17,6 +17,22 @@ I am really happy to work on it and gain new knowledges
 
 That's it
 
+## Usage
+
+Nothing special, just
+
+```
+npm start
+```
+
+or
+
+```
+npm run build
+```
+
+and open `index.html` from `build` directory
+
 [status-url]: https://github.com/vikian050194/sorting/pulse
 [status-badge]: https://img.shields.io/github/last-commit/vikian050194/sorting.svg
 
