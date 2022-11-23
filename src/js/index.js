@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const sorts = [
         BubbleSort
     ];
+
     if (isTest) {
         sorts.splice(0, 0, TestSort);
     }
@@ -67,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
         SquareAnimation,
         CircleAnimation
     ];
+
     if (isTest) {
         animations.splice(0, 0, TestAnimation);
     }
@@ -85,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
         BowTimeFunction,
         ElasticTimeFunction
     ];
+
     if (isTest) {
         functions.splice(0, 0, TestTimeFunction);
     }
@@ -107,8 +110,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const renderTimeType = () => {
         for (const key in tf) {
-            const selected = key == timeFunction ? "option selected" : "option";
-            builder.div({ class: selected }).text(key).onClick(() => { timeFunction = key; renderTimeType(); }).close();
+            const onClick = () => {
+                timeFunction = key;
+                renderTimeType();
+            };
+
+            builder.div();
+            const inputProps = { type: "radio", class: "option", value: key, name: "time" };
+
+            if (key == timeFunction) {
+                inputProps["checked"] = true;
+            }
+
+            builder.input(inputProps).onClick(onClick);
+            builder.open("label", { for: key }).text(key).close();
+            builder.close();
+
         }
 
         replace($timeType, convert(builder.done()));
@@ -120,8 +137,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const renderSortType = () => {
         for (const key in ss) {
-            const selected = key == sortType ? "option selected" : "option";
-            builder.div({ class: selected }).text(key).onClick(() => { sortType = key; renderSortType(); }).close();
+            const onClick = () => {
+                sortType = key;
+                renderSortType();
+            };
+
+            builder.div();
+            const inputProps = { type: "radio", class: "option", value: key, name: "sorting" };
+
+            if (key == sortType) {
+                inputProps["checked"] = true;
+            }
+
+            builder.input(inputProps).onClick(onClick);
+            builder.open("label", { for: key }).text(key).close();
+            builder.close();
         }
 
         replace($sortType, convert(builder.done()));
@@ -133,8 +163,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const renderAnimationType = () => {
         for (const key in aa) {
-            const selected = key == animationType ? "option selected" : "option";
-            builder.div({ class: selected }).text(key).onClick(() => { animationType = key; renderAnimationType(); }).close();
+            const onClick = () => {
+                animationType = key;
+                renderAnimationType();
+            };
+
+            builder.div();
+            const inputProps = { type: "radio", class: "option", value: key, name: "animation" };
+
+            if (key == animationType) {
+                inputProps["checked"] = true;
+            }
+
+            builder.input(inputProps).onClick(onClick);
+            builder.open("label", { for: key }).text(key).close();
+            builder.close();
         }
 
         replace($animationType, convert(builder.done()));
@@ -142,19 +185,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
     renderAnimationType();
 
-    const $elementsCount = convert(builder.div({ id: "elements-count" }).close().done())[0];
-
     const countOptions = [5, 8, 13, 21];
+
+    const $elementsCount = convert(builder.div({ id: "elements-count" }).close().done())[0];
 
     const renderElementsCount = () => {
         for (const key of countOptions) {
-            const selected = key == elementsCount ? "option selected" : "option";
-            builder.div({ class: selected }).text(key).onClick(() => {
+            const onClick = () => {
                 elementsCount = parseInt(key);
                 elements = getElements(elementsCount);
                 visualizer.preview({ elements });
                 renderElementsCount();
-            }).close();
+            };
+
+            builder.div();
+            const inputProps = { type: "radio", class: "option", value: key, name: "count" };
+
+            if (key == elementsCount) {
+                inputProps["checked"] = true;
+            }
+
+            builder.input(inputProps).onClick(onClick);
+            builder.open("label", { for: key }).text(key).close();
+            builder.close();
         }
 
         replace($elementsCount, convert(builder.done()));
@@ -168,8 +221,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const renderAnimationDuration = () => {
         for (const key of durationOptions) {
-            const selected = key == animationDuration ? "option selected" : "option";
-            builder.div({ class: selected }).text(key).onClick(() => { animationDuration = parseInt(key); renderAnimationDuration(); }).close();
+            const onClick = () => {
+                animationDuration = parseInt(key);
+                renderAnimationDuration();
+            };
+            
+            builder.div();
+            const inputProps = { type: "radio", class: "option", value: key, name: "duration" };
+
+            if (key == animationDuration) {
+                inputProps["checked"] = true;
+            }
+
+            builder.input(inputProps).onClick(onClick);
+            builder.open("label", { for: key }).text(key).close();
+            builder.close();
         }
 
         replace($animationDuration, convert(builder.done()));
@@ -177,18 +243,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     renderAnimationDuration();
 
-    builder.button().text("shuffle").onClick(() => {
+    builder.button({ class: "action" }).text("shuffle").onClick(() => {
         elements = getElements(elementsCount);
         visualizer.preview({ elements });
     }).close();
-    builder.button().text("start").onClick(() => {
+
+    builder.button({ class: "action" }).text("start").onClick(() => {
         const instruction = ss[sortType].sort(elements);
         visualizer.setAnimationType(animationType);
         visualizer.setAnimationDuration(animationDuration);
         visualizer.setTimeFunction(timeFunction);
         visualizer.start(instruction);
     }).close();
-    builder.button({ "disabled": true }).text("stop").onClick(visualizer.stop).close();
+
+    builder.button({ disabled: true, class: "action" }).text("stop").onClick(visualizer.stop).close();
+
     insert($actions, convert(builder.done()));
 
     insert($options, [
