@@ -4,16 +4,12 @@ export default class BaseAnimation {
     }
 
     select() {
-        return (index, action, progress = 0) => {
-            if (progress > 1) {
-                progress = 1;
-            }
-            let color = Math.floor(255 * progress).toString(16);
-            if (color.length == 1) {
-                color = `0${color}`;
-            }
+        // eslint-disable-next-line no-unused-vars
+        return (index, action, progress) => {
+            const color = index === 0 ? "FF0000" : "00FF00";
+
             const style = {
-                borderColor: `#${color}${color}00`
+                borderColor: `#${color}`
             };
 
             return style;
