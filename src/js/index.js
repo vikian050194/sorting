@@ -3,7 +3,8 @@ import RandomInt from "random-int";
 import Visualizer from "./visualizer";
 import {
     TestSort,
-    BubbleSort
+    BubbleSort,
+    GnomeSort
 } from "./algorithms";
 import {
     TestAnimation,
@@ -51,7 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const ss = {};
     const sorts = [
-        BubbleSort
+        BubbleSort,
+        GnomeSort
     ];
 
     if (isTest) {
@@ -225,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 animationDuration = parseInt(key);
                 renderAnimationDuration();
             };
-            
+
             builder.div();
             const inputProps = { type: "radio", class: "option", value: key, name: "duration" };
 
