@@ -7,7 +7,6 @@ export default class CircleAnimation extends BaseAnimation {
 
     swap() {
         return (index, action, progress = 0) => {
-            let borderColor = "#000000";
             let bottom = "0px";
             let left = "0px";
             let order = index;
@@ -38,21 +37,9 @@ export default class CircleAnimation extends BaseAnimation {
                 dx += distance / 2;
                 dy *= distance / 2;
 
-                if (index === action.from) {
-                    const color256 = Math.floor(255 * progress);
-                    const colorR = color256.toString(16);
-                    const colorB = (255 - color256).toString(16);
-                    borderColor = `#${colorR}00${colorB}`;
-                }
-
                 if (index === action.to) {
                     dx *= (-1);
                     dy *= (-1);
-
-                    const color256 = Math.floor(255 * progress);
-                    const colorR = (255 - color256).toString(16);
-                    const colorB = color256.toString(16);
-                    borderColor = `#${colorR}00${colorB}`;
                 }
             }
 
@@ -61,7 +48,6 @@ export default class CircleAnimation extends BaseAnimation {
 
             return {
                 order,
-                borderColor,
                 bottom,
                 left
             };
