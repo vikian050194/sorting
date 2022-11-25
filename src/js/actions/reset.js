@@ -1,8 +1,8 @@
 import BaseAction from "./base";
 
-export class SelectAction extends BaseAction {
+export class ResetAction extends BaseAction {
     get key() {
-        return "select";
+        return "reset";
     }
 
     constructor(...index) {
