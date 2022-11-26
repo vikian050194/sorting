@@ -34,8 +34,10 @@ export default class CircleAnimation extends BaseAnimation {
                 }
             } else {
                 dx *= distance / 2;
-                dx += distance / 2;
+                dx *= (action.to - action.from);
+                dx += distance * (action.to - action.from) / 2;
                 dy *= distance / 2;
+                dy *= (action.to - action.from);
 
                 if (index === action.to) {
                     dx *= (-1);

@@ -4,7 +4,8 @@ import Visualizer from "./visualizer";
 import {
     TestSort,
     BubbleSort,
-    GnomeSort
+    GnomeSort,
+    SelectionSort
 } from "./algorithms";
 import {
     TestAnimation,
@@ -53,7 +54,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const ss = {};
     const sorts = [
         BubbleSort,
-        GnomeSort
+        GnomeSort,
+        SelectionSort
     ];
 
     if (isTest) {

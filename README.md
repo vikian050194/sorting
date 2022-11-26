@@ -11,27 +11,22 @@ It is implemented without any framework or library except my own lightweight van
 
 ## Motivation
 
-**sorting** is a pet-project and my own handmade bicycle
-
-I am really happy to work on it and gain new knowledges
-
-That's it
+**sorting** is a pet-project for fun and to gain new knowledges
 
 ## Usage
 
-Nothing special, just
-
 ```
+npm run bulid
 npm start
+google-chrome http://localhost:8080
 ```
 
 or
 
 ```
 npm run build
+google-chrome build/index.html
 ```
-
-and open `index.html` from `build` directory
 
 [status-url]: https://github.com/vikian050194/sorting/pulse
 [status-badge]: https://img.shields.io/github/last-commit/vikian050194/sorting.svg

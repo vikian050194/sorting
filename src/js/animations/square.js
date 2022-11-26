@@ -43,7 +43,12 @@ export default class SquareAnimation extends BaseAnimation {
                 }
             } else {
                 dx *= distance;
-                dy *= distance / 2;
+                dx *= (action.to - action.from);
+                dy *= distance;
+
+                if (Math.abs(action.to - action.from) === 1) {
+                    dy /= 2;
+                }
 
                 if (index === action.to) {
                     dx *= (-1);
