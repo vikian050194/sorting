@@ -1,8 +1,8 @@
-import assert from "assert";
+import assert from "node:assert";
 import { TestAnimation } from "../../src/js/animations";
 
 const test = new TestAnimation();
-const gen = test.move();
+const gen = test.swap();
 
 describe("Animations: dummy", function () {
     it("Zero progress", function () {

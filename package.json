@@ -7,7 +7,7 @@
     "dev": "webpack -w",
     "build": "webpack",
     "release": "webpack --config webpack.production.config.js",
-    "test": "mocha ./tests/**/*-tests.js  --require @babel/register",
+    "test": "mocha ./tests/**/*-tests.js --require @babel/register",
     "cover": "nyc --reporter=html npm run test"
   },
   "engines": {
@@ -17,8 +17,9 @@
     "@babel/cli": "^7.19.3",
     "@babel/core": "^7.20.2",
     "@babel/eslint-parser": "^7.19.1",
+    "@babel/node": "^7.20.2",
+    "@babel/preset-env": "^7.20.2",
     "@babel/register": "^7.18.9",
-    "assert": "^2.0.0",
     "babel-loader": "^9.1.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.2",
