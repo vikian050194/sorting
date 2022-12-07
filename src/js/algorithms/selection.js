@@ -23,16 +23,20 @@ export default class SelectionSort extends BaseSort {
             actions.push(new SelectAction(minIndex));
             actions.push(new ResetAction(minIndex));
 
-            minIndex = this.min(elements, index + 1, length);
+            minIndex = this.min(elements, minIndex, index + 1, length - 1);
+
+            if (index === minIndex) {
+                break;
+            }
 
             actions.push(new SelectAction(minIndex));
             actions.push(new ResetAction(minIndex));
 
-            actions.push(new SelectAction(minIndex, index));
-            actions.push(new SwapAction(minIndex, index));
-            actions.push(new ResetAction(minIndex, index));
+            actions.push(new SelectAction(index, minIndex));
+            actions.push(new SwapAction(index, minIndex));
+            actions.push(new ResetAction(index, minIndex));
 
-            this.swap(elements, minIndex, index);
+            this.swap(elements, index, minIndex);
         }
 
         return {
@@ -41,8 +45,8 @@ export default class SelectionSort extends BaseSort {
         };
     }
 
-    min(elements, left, right) {
-        let min = left;
+    min(elements, initialMin, left, right) {
+        let min = initialMin;
 
         for (let index = left; index <= right; index++) {
             if (elements[index] < elements[min]) {
