@@ -1,4 +1,3 @@
-export { default as TestTimeFunction } from "./test";
 export { default as LinearTimeFunction } from "./linear";
 export { default as QuadTimeFunction } from "./quad";
 export { default as CircleTimeFunction } from "./circ";

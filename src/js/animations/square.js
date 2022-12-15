@@ -56,8 +56,8 @@ export default class SquareAnimation extends BaseAnimation {
                 }
             }
 
-            bottom = `${dy}px`;
-            left = `${dx}px`;
+            bottom = `${dy.toFixed(2)}px`;
+            left = `${dx.toFixed(2)}px`;
 
             return {
                 order,

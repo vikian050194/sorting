@@ -2,18 +2,15 @@ import { Builder, convert, insert, replace } from "fandom";
 import RandomInt from "random-int";
 import Visualizer from "./visualizer";
 import {
-    TestSort,
     BubbleSort,
     GnomeSort,
     SelectionSort
 } from "./algorithms";
 import {
-    TestAnimation,
     SquareAnimation,
     CircleAnimation
 } from "./animations";
 import {
-    TestTimeFunction,
     LinearTimeFunction,
     QuadTimeFunction,
     BounceTimeFunction,
@@ -37,8 +34,6 @@ function getElements(count) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    const isTest = false;
-
     const builder = new Builder();
 
     const $options = document.getElementById("options");
@@ -58,10 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
         SelectionSort
     ];
 
-    if (isTest) {
-        sorts.splice(0, 0, TestSort);
-    }
-
     for (const sort of sorts) {
         const si = new sort();
         ss[si.key] = si;
@@ -72,10 +63,6 @@ document.addEventListener("DOMContentLoaded", function () {
         SquareAnimation,
         CircleAnimation
     ];
-
-    if (isTest) {
-        animations.splice(0, 0, TestAnimation);
-    }
 
     for (const animation of animations) {
         const ai = new animation();
@@ -91,10 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
         BowTimeFunction,
         ElasticTimeFunction
     ];
-
-    if (isTest) {
-        functions.splice(0, 0, TestTimeFunction);
-    }
 
     for (const f of functions) {
         const fi = new f();
