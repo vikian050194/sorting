@@ -1,6 +1,6 @@
 import { Builder, replace, convert } from "fandom";
 
-class Visualizer {
+class Animator {
     constructor({
         animations,
         functions,
@@ -109,4 +109,4 @@ class Visualizer {
     }
 }
 
-export default Visualizer;
+export default Animator;

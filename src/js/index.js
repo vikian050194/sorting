@@ -1,6 +1,6 @@
 import { Builder, convert, insert, replace } from "fandom";
 import RandomInt from "random-int";
-import Visualizer from "./visualizer";
+import Animator from "./animator";
 import {
     BubbleSort,
     GnomeSort,
@@ -84,14 +84,14 @@ document.addEventListener("DOMContentLoaded", function () {
         tf[fi.key] = fi.calculate;
     }
 
-    const visualizer = new Visualizer({
+    const animator = new Animator({
         animationType,
         functionName: timeFunction,
         animationDuration,
         animations: aa,
         functions: tf
     });
-    visualizer.preview({ elements });
+    animator.preview({ elements });
 
     const $timeType = convert(builder.div({ id: "time-type" }).close().done())[0];
 
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const onClick = () => {
                 elementsCount = parseInt(key);
                 elements = getElements(elementsCount);
-                visualizer.preview({ elements });
+                animator.preview({ elements });
                 renderElementsCount();
             };
 
@@ -232,18 +232,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     builder.button({ class: "action" }).text("shuffle").onClick(() => {
         elements = getElements(elementsCount);
-        visualizer.preview({ elements });
+        animator.preview({ elements });
     }).close();
 
     builder.button({ class: "action" }).text("start").onClick(() => {
         const instruction = ss[sortType].sort(elements);
-        visualizer.setAnimationType(animationType);
-        visualizer.setAnimationDuration(animationDuration);
-        visualizer.setTimeFunction(timeFunction);
-        visualizer.start(instruction);
+        animator.setAnimationType(animationType);
+        animator.setAnimationDuration(animationDuration);
+        animator.setTimeFunction(timeFunction);
+        animator.start(instruction);
     }).close();
 
-    builder.button({ disabled: true, class: "action" }).text("stop").onClick(visualizer.stop).close();
+    builder.button({ disabled: true, class: "action" }).text("stop").onClick(animator.stop).close();
 
     insert($actions, convert(builder.done()));
 
@@ -255,6 +255,6 @@ document.addEventListener("DOMContentLoaded", function () {
         $animationDuration
     ]);
 
-    visualizer.setAnimationType(animationType);
-    visualizer.setAnimationDuration(animationDuration);
+    animator.setAnimationType(animationType);
+    animator.setAnimationDuration(animationDuration);
 });
