@@ -13,6 +13,7 @@ class Animator {
         this.functionName = functionName;
         this.animationType = animationType;
         this.animationDuration = animationDuration;
+        this.next = true;
     }
 
     setAnimationDuration(value) {
@@ -102,10 +103,19 @@ class Animator {
     }
 
     async start({ actions }) {
+        this.next = true;
         this.animation = this.animations[this.animationType];
         for (const action of actions) {
-            await this.applyAction(action);
+            if (this.next) {
+                await this.applyAction(action);
+            } else {
+                break;
+            }
         }
+    }
+
+    async stop() {
+        this.next = false;
     }
 }
 

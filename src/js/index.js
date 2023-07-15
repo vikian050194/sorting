@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             builder.div();
-            const inputProps = { type: "radio", class: "option", value: key, name: "time" };
+            const inputProps = { type: "radio", id: key, class: "option", value: key, name: "time" };
 
             if (key == timeFunction) {
                 inputProps["checked"] = true;
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             builder.div();
-            const inputProps = { type: "radio", class: "option", value: key, name: "sorting" };
+            const inputProps = { type: "radio", id: key, class: "option", value: key, name: "sorting" };
 
             if (key == sortType) {
                 inputProps["checked"] = true;
@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             builder.div();
-            const inputProps = { type: "radio", class: "option", value: key, name: "animation" };
+            const inputProps = { type: "radio", id: key, class: "option", value: key, name: "animation" };
 
             if (key == animationType) {
                 inputProps["checked"] = true;
@@ -186,14 +186,15 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             builder.div();
-            const inputProps = { type: "radio", class: "option", value: key, name: "count" };
+            const id = `count-${key}`;
+            const inputProps = { type: "radio", id, class: "option", value: key, name: "count" };
 
             if (key == elementsCount) {
                 inputProps["checked"] = true;
             }
 
             builder.input(inputProps).onClick(onClick);
-            builder.open("label", { for: key }).text(key).close();
+            builder.open("label", { for: id }).text(key).close();
             builder.close();
         }
 
@@ -214,14 +215,15 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             builder.div();
-            const inputProps = { type: "radio", class: "option", value: key, name: "duration" };
+            const id = `duration-${key}`;
+            const inputProps = { type: "radio", id, class: "option", value: key, name: "duration" };
 
             if (key == animationDuration) {
                 inputProps["checked"] = true;
             }
 
             builder.input(inputProps).onClick(onClick);
-            builder.open("label", { for: key }).text(key).close();
+            builder.open("label", { for: id }).text(key).close();
             builder.close();
         }
 
@@ -243,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
         animator.start(instruction);
     }).close();
 
-    builder.button({ disabled: true, class: "action" }).text("stop").onClick(animator.stop).close();
+    builder.button({ class: "action" }).text("stop").onClick(() => animator.stop()).close();
 
     insert($actions, convert(builder.done()));
 
