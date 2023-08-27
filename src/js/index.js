@@ -36,7 +36,21 @@ function getElements(count) {
 document.addEventListener("DOMContentLoaded", function () {
     const builder = new Builder();
 
+    builder.div({ className: "container" });
+    builder.open("header");
+    builder.div({id: "options", className: "options"}).close();
+    builder.close();
+    builder.open("main");
+    builder.div({id: "elements", className: "elements"}).close();
+    builder.close();
+    builder.open("footer");
+    builder.div({id: "actions", className: "actions"}).close();
+    builder.close();
+    builder.close();
+    replace(document.body, convert(builder.done()));
+
     const $options = document.getElementById("options");
+    const $elements = document.getElementById("elements");
     const $actions = document.getElementById("actions");
 
     let sortType = "bubble";
@@ -85,6 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const animator = new Animator({
+        $container: $elements,
         animationType,
         functionName: timeFunction,
         animationDuration,

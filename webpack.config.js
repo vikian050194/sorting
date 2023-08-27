@@ -1,6 +1,8 @@
 const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
-const ESLintPlugin = require("eslint-webpack-plugin");
+const ESLintWebpackPlugin = require("eslint-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const buildFolderName = "build";
@@ -42,25 +44,33 @@ module.exports = {
         ]
     },
     output: {
-        filename: "bundle.js",
+        filename: "bundle.[contenthash].js",
         path: path.resolve(__dirname, buildFolderName),
         publicPath: "/"
     },
     plugins: [
-        new MiniCssExtractPlugin({
-            filename: "bundle.css"
-        }),
-        new ESLintPlugin({}),
-        new CopyPlugin({
+        new ESLintWebpackPlugin({}),
+        new CleanWebpackPlugin(),
+        new CopyWebpackPlugin({
             patterns: [
-                "src/index.html",
                 "src/favicon.svg"
             ]
+        }),
+        new MiniCssExtractPlugin({
+            filename: "bundle.[contenthash].css"
+        }),
+        new HtmlWebpackPlugin({
+            filename: "index.html",
+            title: "sotring",
+            favicon: "src/favicon.svg",
+            meta: {
+                viewport: "width=device-width, initial-scale=1.0, minimal-ui, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+            }
         })
     ],
     devServer: {
         host: "127.0.0.1",
-        port: 8080,
+        port: 8000,
         hot: false,
         open: false,
         historyApiFallback: true,

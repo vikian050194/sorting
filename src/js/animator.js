@@ -2,12 +2,14 @@ import { Builder, replace, convert } from "fandom";
 
 class Animator {
     constructor({
+        $container,
         animations,
         functions,
         functionName,
         animationType,
         animationDuration
     }) {
+        this.$container = $container;
         this.animations = animations;
         this.functions = functions;
         this.functionName = functionName;
@@ -35,12 +37,10 @@ class Animator {
             builder.div({ id: elements[i], class: "element-container", style: `order: ${i}` }).div({ class: "element" }).text(elements[i]).close().close();
         }
 
-        const container = document.getElementById("elements");
-
         const models = builder.done();
         const domElements = convert(models);
 
-        replace(container, domElements);
+        replace(this.$container, domElements);
     }
 
     startAnimation = ({ timing, draw, duration }) => {
