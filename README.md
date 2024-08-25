@@ -19,7 +19,7 @@ It is implemented without any framework or library except my own lightweight van
 ```
 npm run bulid
 npm start
-google-chrome http://localhost:8080
+google-chrome http://localhost:8000
 ```
 
 or
