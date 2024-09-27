@@ -32,7 +32,7 @@ class Animator {
         const builder = new Builder();
 
         for (let i = 0; i < elements.length; i++) {
-            builder.div({ id: elements[i], class: "element-container", style: `order: ${i}` }).div({ class: "element" }).text(elements[i]).close().close();
+            builder.div({ id: elements[i], class: "element-container", style: { order: i } }).div({ class: "element" }).text(elements[i]).close().close();
         }
 
         const container = document.getElementById("elements");

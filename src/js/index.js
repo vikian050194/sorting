@@ -238,11 +238,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }).close();
 
     builder.button({ class: "action" }).text("start").onClick(() => {
-        const instruction = ss[sortType].sort(elements);
+        const instructions = ss[sortType].sort(elements);
         animator.setAnimationType(animationType);
         animator.setAnimationDuration(animationDuration);
         animator.setTimeFunction(timeFunction);
-        animator.start(instruction);
+        animator.start(instructions);
     }).close();
 
     builder.button({ class: "action" }).text("stop").onClick(() => animator.stop()).close();
