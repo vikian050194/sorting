@@ -10,6 +10,8 @@
 
 It is implemented without any framework or library except my own lightweight vanilla package that probably could be just one among other source files of current sources
 
+By the way, there is [todo list](./TODO.md).
+
 ## Motivation
 
 **sorting** is a pet-project for fun and to gain new knowledges
