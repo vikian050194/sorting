@@ -14,6 +14,7 @@ class Animator {
         this.animationType = animationType;
         this.animationDuration = animationDuration;
         this.next = true;
+        this.index = 0;
     }
 
     setAnimationDuration(value) {
@@ -105,12 +106,10 @@ class Animator {
     async start({ actions }) {
         this.next = true;
         this.animation = this.animations[this.animationType];
-        for (const action of actions) {
-            if (this.next) {
-                await this.applyAction(action);
-            } else {
-                break;
-            }
+        for (let i = this.index; i < actions.length && this.next; i++) {
+            const action = actions[i];
+            await this.applyAction(action);
+            this.index = i;
         }
     }
 
